@@ -28,7 +28,7 @@ def assertRaises(exception,msg=None):
 def testing_assert_raises():
     with assertRaises(IndexError,"I didnt hit anything"):
         lst = []
-        print(lst[3])
+        print('a' + 5)
 
 
 testing_assert_raises()
