@@ -139,23 +139,47 @@ class Playlist:
         return instance_of_playlist
 
 class MusicCrawler:
+    #fix music crawler
     def __init__(self,fold_path):
-        #collectingTags
-        tags=[]
-        (_, _, filenames) = next(os.walk(fold_path))
-        for file_name in file_names:
-            with open(fold_path+"/"+file_name) as file:
-                tags.append(mutagen.FileType(file).tags.pprint())
-        self.__playlists={}
-        for tag in tags:
-            newPlaylist=Playlist(tag)
-            newPlaylist.add_songs(filter(lambda song:  ,songs))#)
-            self.__playlists[tag]=newPlaylist
+        self.playlists={}
+        for root, dirnames, filenames in os.walk(dirpath):
+            #for every Folder create a PLaylist
+            if filenames==[]:
+                continue
+            cur_playlist = Playlist(root.split('/')[-1])
+            for file in filenames:
+                filepath = root + "/" + file
+                filetype = mutagen.File(filepath) 
+                if filetype == None:
+                    continue
+                else:
+                    cur_playlist.add_song(Song.parse_song_from_mutagen_dict(filepath, filetype))
+            if not cur_playlist.empty():
+                self.playlists[cur_playlist.name] = (cur_playlist, root)#playlist and path
+class MusicPlayer
+    def __init__(self):
+        self.myMusic = MusicCrawler('/home/mitakaxd/code/python101/Python101/Python101/week05/music/')
+    def playPlaylist(self,playlistName):
+        self.playSong(playlistName)
 
-    def generate_playlist(self):
-        print(self.__playlists)
+    def playSong(self,playlistName,songName=None):
+        if songName == None:
+            currentSong = self.myMusic.playlists[playlistName][0].cur_playlist_song
+        else:
+            currentSong = self.myMusic.playlists[playlistName][0].get_song(songName)
+        self.instance = vlc.Instance()
+        self.vlc_player = self.instance.media_player_new()
+        self.vlc_player.set_mrl("file:///" + self.myMusic.playlists[playlistName][1]+ '/' + currentSong.name)
+        self.vlc_player.play()
 
+    def listPlaylists(self):
+        for playlistName in self.myMusic.playlists[0]:
+            print(playlistName)
 
-
-class TestLengthParsed(unittest.TestCase):
-    pass
+    def listAllSongs(self):
+        for playlistName, playlist in self.myMusic.playlists[0].items():
+            print(playlistName)
+            playlist.list_playlist_songs()
+            print("--------------")
+    def stop(self):
+        self.vlc_player.stop()
