@@ -9,9 +9,9 @@ def performance(file_name):
         time_elapsed = (datetime.datetime.now() - time_now)
         f.write(str(datetime.datetime.now()) + " Execution time: " + str(time_elapsed) + '\n')
 
-# def myTestfunc():
-#     with performance('log.txt'):
-#         sleep(1)
+def myTestfunc():
+    with performance('log.txt'):
+        sleep(1)
 
 # myTestfunc()
 # myTestfunc()
@@ -22,7 +22,7 @@ def assertRaises(exception,msg=None):
     except exception:
         pass
     else:
-        raise Exception(msg)
+        raise Exception()
 
 
 def testing_assert_raises():
